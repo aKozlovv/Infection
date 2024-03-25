@@ -210,6 +210,7 @@ private extension SimulationView {
         group.interItemSpacing = NSCollectionLayoutSpacing.fixed(15)
         
         let section = NSCollectionLayoutSection(group: group)
+        section.interGroupSpacing = 15
         
         let layout = UICollectionViewCompositionalLayout(section: section)
         layout.configuration.scrollDirection = .horizontal
