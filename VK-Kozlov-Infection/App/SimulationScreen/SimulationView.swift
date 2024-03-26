@@ -206,8 +206,8 @@ private extension SimulationView {
         let item = NSCollectionLayoutItem(layoutSize: itemSize)
         
         
-        let groupSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1.0 * scale),
-                                               heightDimension: .fractionalWidth(0.2))
+        let groupSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1.0),
+                                               heightDimension: .fractionalWidth(0.2 * scale))
         let group = NSCollectionLayoutGroup.horizontal(layoutSize: groupSize,
                                                        subitems: [item])
         group.interItemSpacing = NSCollectionLayoutSpacing.fixed(15)
