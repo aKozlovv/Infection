@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		FB67319F2BB2BF630005809E /* Int + Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = FB67319E2BB2BF630005809E /* Int + Extension.swift */; };
 		FB9F36972BAD9E7200EE9354 /* SimulationCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = FB9F36962BAD9E7200EE9354 /* SimulationCell.swift */; };
 		FBAC63B32BB0512D00CE69A6 /* SimulationAlert.swift in Sources */ = {isa = PBXBuildFile; fileRef = FBAC63B22BB0512D00CE69A6 /* SimulationAlert.swift */; };
 		FBAC63B52BB0534400CE69A6 /* UIViewController + Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = FBAC63B42BB0534400CE69A6 /* UIViewController + Extension.swift */; };
@@ -24,6 +25,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		FB67319E2BB2BF630005809E /* Int + Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Int + Extension.swift"; sourceTree = "<group>"; };
 		FB9F36962BAD9E7200EE9354 /* SimulationCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SimulationCell.swift; sourceTree = "<group>"; };
 		FBAC63B22BB0512D00CE69A6 /* SimulationAlert.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SimulationAlert.swift; sourceTree = "<group>"; };
 		FBAC63B42BB0534400CE69A6 /* UIViewController + Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIViewController + Extension.swift"; sourceTree = "<group>"; };
@@ -124,6 +126,7 @@
 			children = (
 				FBDE0B5F2BAC2E800023921C /* Constraints + Extension.swift */,
 				FBAC63B42BB0534400CE69A6 /* UIViewController + Extension.swift */,
+				FB67319E2BB2BF630005809E /* Int + Extension.swift */,
 			);
 			path = "Extensions & Protocols";
 			sourceTree = "<group>";
@@ -221,6 +224,7 @@
 				FBDE0B452BAC2C910023921C /* StartController.swift in Sources */,
 				FBDE0B7A2BACA21B0023921C /* SimulationController.swift in Sources */,
 				FB9F36972BAD9E7200EE9354 /* SimulationCell.swift in Sources */,
+				FB67319F2BB2BF630005809E /* Int + Extension.swift in Sources */,
 				FBDE0B5E2BAC2DE00023921C /* StartView.swift in Sources */,
 				FBDE0B6C2BAC3F5E0023921C /* SimulationView.swift in Sources */,
 				FBAC63B32BB0512D00CE69A6 /* SimulationAlert.swift in Sources */,

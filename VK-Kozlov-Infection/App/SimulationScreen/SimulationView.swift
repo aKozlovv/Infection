@@ -135,7 +135,7 @@ final class SimulationView: UIView {
 
 // MARK: - UIGestureRecognizerDelegate
 /**
- Методы, необходимые для реализации зума представления симуляции.
+ Методы, необходимые для реализации зума представления симуляции. При pinch жесте метод обновляет размеры collectionView, в том числе обновляются и размеры item'ов
  */
 extension SimulationView: UIGestureRecognizerDelegate {
     
@@ -145,7 +145,10 @@ extension SimulationView: UIGestureRecognizerDelegate {
             scale *= gestureRecognizer.scale
             gestureRecognizer.scale = 1.0
             
-            mainCollection.transform = CGAffineTransform(scaleX: scale, y: scale)
+            mainCollection.setCollectionViewLayout(setupCollectionLayout(), animated: false)
+            mainCollection.collectionViewLayout.invalidateLayout()
+            mainCollection.setNeedsLayout()
+            mainCollection.layoutIfNeeded()
         }
     }
     
@@ -198,12 +201,12 @@ private extension SimulationView {
     // MARK: - CollectionView layout
     func setupCollectionLayout() -> UICollectionViewLayout {
         
-        let itemSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(0.2),
+        let itemSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(0.2 * scale),
                                               heightDimension: .fractionalHeight(1.0))
         let item = NSCollectionLayoutItem(layoutSize: itemSize)
         
         
-        let groupSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1.0),
+        let groupSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1.0 * scale),
                                                heightDimension: .fractionalWidth(0.2))
         let group = NSCollectionLayoutGroup.horizontal(layoutSize: groupSize,
                                                        subitems: [item])

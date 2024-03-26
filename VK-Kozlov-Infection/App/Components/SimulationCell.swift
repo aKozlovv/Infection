@@ -42,7 +42,7 @@ final class SimulationCell: UICollectionViewCell {
     
     // MARK: - Public methods
     func updateCellData(with person: Person) {
-        if person.checkIsInfected() {
+        if person.isInfected {
             mainImageView.tintColor = .red
         }
     }

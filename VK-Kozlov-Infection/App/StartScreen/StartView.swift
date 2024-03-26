@@ -2,6 +2,13 @@ import UIKit
 
 final class StartView: UIView {
     
+    private enum Titles {
+        static let groupSizeTitle = "Размер группы"
+        static let infectionTitle = "Число заражений за контакт"
+        static let periodTitle = "Период пересчета (секунды)"
+        static let buttonTitle = "Начать симуляцию"
+    }
+    
     // MARK: Delegate
     weak var controller: StartController?
     
@@ -70,31 +77,22 @@ final class StartView: UIView {
     // MARK: - TextField validation
     @objc
     private func startButtonTapped() {
-        guard let group = validateTextField(groupSizeTextField.text) else {
+        guard let group = Int.convertStringToInt(from: groupSizeTextField.text) else {
             controller?.presentTextFieldAlert()
             return
         }
         
-        guard let factor = validateTextField(infectionFactorTextField.text) else {
+        guard let factor = Int.convertStringToInt(from: infectionFactorTextField.text) else {
             controller?.presentTextFieldAlert()
             return
         }
         
-        guard let period = validateTextField(periodTextField.text) else {
+        guard let period = Int.convertStringToInt(from: periodTextField.text) else {
             controller?.presentTextFieldAlert()
             return
         }
         
         controller?.startSimulation(group: group, infRate: factor, period: period)
-    }
-    
-    
-    private func validateTextField(_ text: String?) -> Int? {
-        guard let value = text else { return nil }
-        
-        guard let number = Int(value) else { return nil }
-        
-        return number
     }
     
     
@@ -120,12 +118,4 @@ final class StartView: UIView {
             startSimulationButton.heightAnchor.constraint(equalToConstant: 45)
         ])
     }
-}
-
-
-private enum Titles {
-    static let groupSizeTitle = "Размер группы"
-    static let infectionTitle = "Число заражений за контакт"
-    static let periodTitle = "Период пересчета (секунды)"
-    static let buttonTitle = "Начать симуляцию"
 }

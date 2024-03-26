@@ -12,10 +12,11 @@ final class SimulationController: UIViewController {
     /// Здесь хранятся индексы здоровых и больных людей, по которым в результате обновляются ячейки коллекции.
     private var timer: Timer?
     private var persons = [Person]()
-    private lazy var indexesForUpdate = [Int]()
-    private lazy var infectedPersonsIndex = [Int]()
+    private lazy var indexesForUpdate = Set<Int>()
+    private lazy var infectedPersonsIndex = Set<Int>()
     
-    private lazy var queue = DispatchQueue.global(qos: .utility)
+    private lazy var threadLock = NSLock()
+    private lazy var queue = DispatchQueue.global(qos: .default)
     private lazy var simulationView = SimulationView(controller: self)
     
     
@@ -54,12 +55,20 @@ final class SimulationController: UIViewController {
     }
     
     private func personTapped(at index: Int) {
-        guard persons[index].tryToInfect() else { return }
-        
-        infectedPersonsIndex.append(index)
+       
+        guard tryInfectPerson(by: index) else { return }
+                
+        infectedPersonsIndex.insert(index)
         simulationView.updateInfectedCells(at: [index])
     }
     
+    private func tryInfectPerson(by index: Int) -> Bool {
+        guard !persons[index].isInfected else { return false }
+        
+        persons[index].isInfected = true
+        return true
+    }
+ 
     
     // MARK: - Simualtion methods
     /**
@@ -72,15 +81,16 @@ final class SimulationController: UIViewController {
             stopSimulation()
             return }
                 
-        queue.sync { [weak self] in
-            guard let self = self else { 
+        queue.async { [weak self] in
+            
+            guard let self = self else {
                 self?.stopSimulation()
                 return }
                         
             self.infectedPersonsIndex.forEach( { self.infectNeighbors(near: $0) } )
             
             DispatchQueue.main.async {
-                self.simulationView.updateInfectedCells(at: self.indexesForUpdate)
+                self.simulationView.updateInfectedCells(at: Array(self.indexesForUpdate))
                 self.simulationView.updateHealthyCounter(with: self.persons.count - self.infectedPersonsIndex.count)
                 self.simulationView.updateInfectedCounter(with: self.infectedPersonsIndex.count)
             }
@@ -95,18 +105,21 @@ final class SimulationController: UIViewController {
         
         for index in neighborsIndexes {
             
-            if persons[index].tryToInfect() {
-                infectedPersonsIndex.append(index)
-                indexesForUpdate.append(index)
-            }
+            threadLock.lock()
+            
+            persons[index].isInfected = true
+            infectedPersonsIndex.insert(index)
+            indexesForUpdate.insert(index)
+            
+            threadLock.unlock()
         }
     }
     
     /**
-     функция вычисляет строку и столбец соответствующего индекса в двумерном массиве. Далее заполняется массив  соседних элементов (neighbor). Это происходит путем проверки каждой координаты в массиве координат на то, чтобы она попадала в границы массива. Если координата удовлетворяет этому условию и соответствует соседнему элементу в массиве, то  индекс элемента добавляется в массив neighbors. Перед возвратом массива neighbor метод также проверяет массив на соответствие infectionRate.
+     функция вычисляет строку и столбец соответствующего индекса в массиве координат. Далее заполняется массив  соседних элементов (neighbor). Это происходит путем проверки каждой координаты в массиве координат на то, чтобы она попадала в границы массива. Если координата удовлетворяет этому условию и соответствует соседнему элементу в массиве, то  индекс элемента добавляется в массив neighbors. Перед возвратом массива neighbor метод также проверяет массив на соответствие infectionRate.
      */
     private func getNeighbors(of index: Int) -> [Int] {
-        let coordinates = [(0, 1), (1, 0), (0, -1), (-1, 0)]
+        let coordinates = [(1, 1), (0, 1), (1, 0), (0, -1), (-1, 0), (-1, -1), (-1, 1), (1, -1)]
         let columns = 5
         let row = index / columns
         let column = index % columns
@@ -125,11 +138,14 @@ final class SimulationController: UIViewController {
             }
         }
         
-        guard neighbors.count <= infectionRate else {
-            neighbors.removeLast(neighbors.count - infectionRate)
-            return neighbors }
-        
-        return neighbors
+        var neighborsSet = Set<Int>()
+        for _ in 0..<infectionRate {
+            
+            if let randomNeighbor = neighbors.randomElement() {
+                neighborsSet.insert(randomNeighbor)
+            }
+        }
+        return Array(neighborsSet)
     }
     
     /**
@@ -161,8 +177,8 @@ extension SimulationController: UICollectionViewDelegate {
     }
     
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        guard !persons[indexPath.item].checkIsInfected() else { return }
-        
+        guard !persons[indexPath.item].isInfected else { return }
+                
         personTapped(at: indexPath.item)
     }
 }
